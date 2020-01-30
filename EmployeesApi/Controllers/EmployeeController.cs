@@ -16,7 +16,7 @@ namespace EmployeesApi.Controllers
         public HttpResponseMessage Get()
         {
             EmployeeModel employeeModel = new EmployeeModel();
-            var model =from emp in  employeeModel.Employees 
+            var model =(from emp in  employeeModel.Employees 
                        join dep in employeeModel.Departments
                        on emp.DepartmentId equals dep.Id
                        select new Response.Employee {
@@ -24,7 +24,8 @@ namespace EmployeesApi.Controllers
                            DepartmentId = emp.DepartmentId,
                            DepartmentName = dep.Name,
                        Name=  emp.Name,
-                           Email = emp.Email};
+                           Email = emp.Email}).ToList();
+
             return Request.CreateResponse(HttpStatusCode.OK, model);
         }
 
@@ -34,15 +35,16 @@ namespace EmployeesApi.Controllers
             var dep = MapperWrapper.Mapper.Map<EmployeeRepository.Employee>(employee);
             employeeModel.Entry(dep).State = EntityState.Modified;
             employeeModel.SaveChanges();
-            return Request.CreateResponse(HttpStatusCode.OK, dep);
+            return Request.CreateResponse("Success");
         }
-        public HttpResponseMessage Delete(Request.Employee employee)
+        public HttpResponseMessage Delete(int employeeid)
         {
             EmployeeModel employeeModel = new EmployeeModel();
+            var employee = employeeModel.Employees.Find(employeeid);
             var dep = MapperWrapper.Mapper.Map<EmployeeRepository.Employee>(employee);
             employeeModel.Entry(dep).State = EntityState.Deleted;
             employeeModel.SaveChanges();
-            return Request.CreateResponse(HttpStatusCode.OK, dep);
+            return Request.CreateResponse("Success");
         }
     }
 }

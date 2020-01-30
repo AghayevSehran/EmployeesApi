@@ -24,7 +24,7 @@ namespace EmployeesApi.Controllers
             var dep = MapperWrapper.Mapper.Map<Department>(department);
             employeeModel.Departments.Add(dep);
             employeeModel.SaveChanges();
-            return Request.CreateResponse(HttpStatusCode.Created);
+            return Request.CreateResponse("Success");
         }
 
         public HttpResponseMessage Put(Request.Department department)
@@ -33,11 +33,13 @@ namespace EmployeesApi.Controllers
             var dep = MapperWrapper.Mapper.Map<Department>(department);
             employeeModel.Entry(dep).State = EntityState.Modified;
             employeeModel.SaveChanges();
-            return Request.CreateResponse(HttpStatusCode.OK,dep);
+            return Request.CreateResponse("Success");
         }
-        public HttpResponseMessage Delete(Request.Department department)
+
+        public HttpResponseMessage Delete(int departmentid)
         {
             EmployeeModel employeeModel = new EmployeeModel();
+            var department = employeeModel.Departments.Find(departmentid);
             var dep = MapperWrapper.Mapper.Map<Department>(department);
             employeeModel.Entry(dep).State = EntityState.Deleted;
             employeeModel.SaveChanges();
